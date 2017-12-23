@@ -32,9 +32,7 @@
             <div class="container">
 
                 <div id="logo" class="pull-left">
-                    <a href="#hero"><img src="img/logo.gif" alt="" title="" /></img></a>
-                    <!-- Uncomment below if you prefer to use a text image -->
-                    <!--<h1><a href="#hero">Header 1</a></h1>-->
+                    <a href="#"><img src="img/logo.gif" alt="" title="" ></a>
                 </div>
             </div>
         </header>
@@ -72,19 +70,5 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.14/vue.min.js"></script>
         <script src="js/app.js"></script>
-        <!-- Required JavaScript Libraries -->
-        <script src="lib/jquery/jquery.min.js"></script>
-        <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-        <script src="lib/superfish/hoverIntent.js"></script>
-        <script src="lib/superfish/superfish.min.js"></script>
-        <script src="lib/morphext/morphext.min.js"></script>
-        <script src="lib/wow/wow.min.js"></script>
-        <script src="lib/stickyjs/sticky.js"></script>
-        <script src="lib/easing/easing.js"></script>
-
-        <!-- Template Specisifc Custom Javascript File -->
-        <script src="js/custom.js"></script>
-
-        <script src="contactform/contactform.js"></script>
     </body>
 </html>

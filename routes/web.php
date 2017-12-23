@@ -11,4 +11,16 @@
 |
 */
 
-Route::get('/', 'MainController@index');
+Route::get('/', 'CubeController@index');
+
+Route::get('/cube', 'CubeController@getCurrent');
+
+Route::post('/cube', 'CubeController@create');
+
+Route::post('/cube/test_cases', 'CubeController@setTestCases');
+
+Route::delete('/cube', 'CubeController@delete');
+
+Route::post('/cube/update', 'CubeController@update');
+
+Route::post('/cube/query', 'CubeController@query');
