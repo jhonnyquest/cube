@@ -17,4 +17,5 @@
 **Feature test / Unit Test**
 - PHPUniit
 
-
+**Deployment**
+- Just clone repo and run command: "composer install".
