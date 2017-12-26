@@ -56,8 +56,12 @@ class CubeController
     {
         $cube = new CubeData();
         $input = $request->all();
-        $cube->setKeyValue('test_cases', $input['test_cases']);
-        return response()->json(['success' => true, 'error' => false]);
+        if($cube->validate($input, 'create_test_cases')){
+            $cube->setKeyValue('test_cases', $input['test_cases']);
+            return response()->json(['success' => true, 'error' => false]);
+        }else
+            return response()->json(['success' => false, 'error' => implode(' ',$cube->getErrors()->all())]);
+
     }
 
     /**
@@ -74,16 +78,20 @@ class CubeController
     {
         $cube = new CubeData();
         $input = $request->all();
-        for ($i = 0; $i < $input['matrix_dimension']; $i++) {
-            for ($j = 0; $j < $input['matrix_dimension']; $j++) {
-                for ($k = 0; $k < $input['matrix_dimension']; $k++) {
-                    $newCube[$i][$j][$k] = 0;
+        if($cube->validate($input, 'create_cube')){
+            for ($i = 0; $i < $input['matrix_dimension']; $i++) {
+                for ($j = 0; $j < $input['matrix_dimension']; $j++) {
+                    for ($k = 0; $k < $input['matrix_dimension']; $k++) {
+                        $newCube[$i][$j][$k] = 0;
+                    }
                 }
             }
-        }
-        $cube->setCube($newCube, $input['quantity_commands']);
-        $cube->setKeyValue('actions', $input['quantity_commands']);
-        return response()->json(['success' => true, 'error' => false], 201);
+            $cube->setCube($newCube, $input['quantity_commands'], $input['matrix_dimension']);
+            $cube->setKeyValue('actions', $input['quantity_commands']);
+            $cube->setKeyValue('dimension', $input['matrix_dimension']);
+            return response()->json(['success' => true, 'error' => false], 201);
+        }else
+            return response()->json(['success' => false, 'error' => implode(' ',$cube->getErrors()->all())]);
     }
 
     /**
@@ -106,18 +114,21 @@ class CubeController
         }
         $dimension = count($currCube);
         $input = $request->all();
-        if ($input['x'] > $dimension || $input['y'] > $dimension || $input['z'] > $dimension) {
-            return response()->json(['error' => 'Values out of range'], 400);
-        }
-        $cube->setCubeValue($input['x'] - 1, $input['y'] - 1, $input['z'] - 1, $input['value']);
-        $cube->setKeyValue('actions', $cube->returnValue('actions') - 1);
-        return response()->json(['success' => true]);
+        if($cube->validate($input, 'update_cube')){
+            if ($input['x'] > $dimension || $input['y'] > $dimension || $input['z'] > $dimension) {
+                return response()->json(['error' => 'Values out of range'], 400);
+            }
+            $cube->setCubeValue($input['x'] - 1, $input['y'] - 1, $input['z'] - 1, $input['value']);
+            $cube->setKeyValue('actions', $cube->returnValue('actions') - 1);
+            return response()->json(['success' => true]);
+        }else
+            return response()->json(['success' => false, 'error' => implode(' ',$cube->getErrors()->all())]);
     }
 
     /**
-     * update function.
+     * query function.
      *
-     * Update operation as part of the commands accepted by cube.
+     * Query operation as part of the commands accepted by cube.
      *
      * @param request $request Object that contains all attributes an operations related with
      *    the cube query command.
@@ -134,11 +145,14 @@ class CubeController
             return response()->json(['success' => false, 'error' => 'Cube not set'], 500);
         }
         $values = $request->all();
-        if($values['x2']-1 < $values['x1']-1 || $values['y2']-1 < $values['y1']-1 || $values['z2']-1 < $values['z1']-1){
-            return response()->json(['error' => 'Values out of range'], 400);
-        }
-        $cube->setKeyValue('actions', $cube->returnValue('actions') - 1);
-        return response()->json(['success' => true, 'result' => $cube->getQuery($values['x1']-1, $values['y1']-1, $values['z1']-1, $values['x2']-1, $values['y2']-1, $values['z2']-1)]);
+        if($cube->validate($values, 'query_cube')){
+            if($values['x2']-1 < $values['x1']-1 || $values['y2']-1 < $values['y1']-1 || $values['z2']-1 < $values['z1']-1){
+                return response()->json(['error' => 'Values out of range'], 400);
+            }
+            $cube->setKeyValue('actions', $cube->returnValue('actions') - 1);
+            return response()->json(['success' => true, 'result' => $cube->getQuery($values['x1']-1, $values['y1']-1, $values['z1']-1, $values['x2']-1, $values['y2']-1, $values['z2']-1)]);
+        }else
+            return response()->json(['success' => false, 'error' => implode(' ',$cube->getErrors()->all())]);
     }
 
     /**

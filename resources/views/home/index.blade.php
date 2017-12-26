@@ -107,7 +107,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="col-lg-4">
-                                <label for="update">Update comand:</label>
+                                <label for="update">Update comand:<br>x y z W</label>
                             </div>
                             <div class="col-lg-6">
                                 <input type="text" class="form-control" id="update" placeholder="e.g. 2 2 2 4">
@@ -119,7 +119,7 @@
                         <br><br>
                         <div class="form-group">
                             <div class="col-lg-4">
-                                <label for="query">Query comand:</label>
+                                <label for="query">Query comand:<br>x1 y1 z1 x2 y2 z2</label>
                             </div>
                             <div class="col-lg-6">
                                 <input type="text" class="form-control" id="query" placeholder="e.g. 2 2 2 4 4 4">

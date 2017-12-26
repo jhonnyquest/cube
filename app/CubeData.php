@@ -11,6 +11,22 @@ namespace App;
 
 class CubeData
 {
+
+    /**
+     * Create test cases rules
+     */
+    public static $createTestCasesRules = array(
+        'test_cases' => 'required|numeric|min:1|max:50'
+    );
+
+    /**
+     * Create cube rules
+     */
+    public static $createCubeRules = array(
+        'matrix_dimension' => 'required|numeric|min:1|max:100',
+        'quantity_commands' => 'required|numeric|min:1|max:1000'
+    );
+
     public function __construct()
     {
         if (!isset($_SESSION)) {
@@ -29,7 +45,7 @@ class CubeData
 
     public function setKeyValue($key, $value)
     {
-            $_SESSION[$key] = $value;
+        $_SESSION[$key] = $value;
     }
 
     public function setCubeValue($x, $y, $z, $value){
@@ -49,11 +65,72 @@ class CubeData
     }
 
     public function setCube($newCube, $actions){
+
         $_SESSION['cube'] = $newCube;
         $_SESSION['initial_actions'] = $actions;
     }
 
     public function deleteSession(){
         session_destroy();
+    }
+
+    /**
+     * Create test case validation
+     */
+    public function validate($input, $type)
+    {
+        $dimension = (isset($_SESSION['dimension'])?$_SESSION['dimension']:0);
+        $rules = array(
+            'create_test_cases' => static::$createTestCasesRules,
+            'create_cube' => static::$createCubeRules,
+            'update_cube' => [
+                'x' => 'required|numeric|min:1|max:'.$dimension,
+                'y' => 'required|numeric|min:1|max:'.$dimension,
+                'z' => 'required|numeric|min:1|max:'.$dimension,
+                'value' => 'required|numeric|min:-1000000000|max:1000000000'
+            ],
+            'query_cube' => [
+                'x1' => 'required|numeric|min:1|max:'.(isset($input['x2'])?$input['x2']:0),
+                'y1' => 'required|numeric|min:1|max:'.(isset($input['y2'])?$input['y2']:0),
+                'z1' => 'required|numeric|min:1|max:'.(isset($input['z2'])?$input['z2']:0),
+                'x2' => 'required|numeric|min:'.(isset($input['x1'])?$input['x1']:0).'|max:'.$dimension,
+                'y2' => 'required|numeric|min:'.(isset($input['y1'])?$input['y1']:0).'|max:'.$dimension,
+                'z2' => 'required|numeric|min:'.(isset($input['z1'])?$input['z1']:0).'|max:'.$dimension,
+            ],
+        );
+
+        $result = \Validator::make($input, $rules[$type]);
+        if ($result->passes()) {
+            return true;
+        }
+        $this->setErrors($result->messages());
+        return false;
+    }
+
+    /**
+     * Set error message bag
+     *
+     * @var Illuminate\Support\MessageBag
+     */
+    protected function setErrors($errors)
+    {
+        $this->errors = $errors;
+    }
+
+    /**
+     * Retrieve error message bag
+     */
+    public function getErrors()
+    {
+        //dd(implode(' ',$this->errors->all()));
+        return $this->errors;
+    }
+
+    /**
+     * Inverse of wasSaved
+     */
+    public function hasErrors()
+    {
+        return !empty($this->errors);
     }
 }
